@@ -1,7 +1,8 @@
 # Jekor product survey (React)
 
 The public page opened from the survey QR code: vote for one favourite product, rate every
-product (1–5 stars + optional opinion), then leave a name and phone number. Arabic only, RTL,
+product (1–5 stars + optional opinion), then — if they want — a name and phone number (both
+optional; an anonymous answer shows as "مشارك #<number>" in the admin). Arabic only, RTL,
 mobile first.
 
 It is a **standalone site** (React 19 + Vite) deployed on **Vercel**. Laravel only provides the
@@ -17,8 +18,8 @@ Laravel ──  GET  https://<API domain>/api/v4/survey              the survey 
 ## Deploy on Vercel
 
 1. **New Project → import the Git repository.**
-2. **Root Directory:** `survey-frontend` (the framework, build command and output directory
-   come from `vercel.json`).
+2. **Root Directory:** leave it empty — this project is the root of its repository (the
+   framework, build command and output directory come from `vercel.json`).
 3. **Environment Variables** (Production, and Preview if used):
 
    | Name | Value |
@@ -44,23 +45,27 @@ Laravel ──  GET  https://<API domain>/api/v4/survey              the survey 
 ## Local development
 
 ```bash
-cd survey-frontend
 npm install
 npm run dev          # http://localhost:5173
 ```
 
-Create `survey-frontend/.env.local` (git-ignored) to forward `/api` to the local Laravel:
+Create `.env.local` (git-ignored) to forward `/api` to the local Laravel:
 
 ```
-VITE_PROXY_TARGET=http://fusteka.test
+VITE_PROXY_TARGET=https://fustekaicecream.test
 ```
 
 The target must be the host of `APP_URL_API`, since the API routes are bound to that domain.
-Never point it at production. To test a production build locally:
+`https://` works: the dev proxy accepts Laragon's self-signed certificate. Never point it at
+production. The page shows "الاستبيان مغلق" until the local survey has 5 products and accepts
+answers (admin → *Product Survey → Products & QR Code*). To test a production build locally:
 
 ```bash
-VITE_SURVEY_API_URL=http://fusteka.test/api/v4/survey npm run build && npx vite preview
+VITE_SURVEY_API_URL=https://fustekaicecream.test/api/v4/survey npm run build && npx vite preview
 ```
+
+(`vite preview` calls that URL directly from the browser, so the browser must trust Laragon's
+certificate — or use `http://` there.)
 
 ## Behaviour worth knowing
 

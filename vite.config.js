@@ -20,8 +20,10 @@ export default defineConfig(({ command, mode }) => {
     server: {
       port: 5173,
       // `npm run dev`: /api/* is forwarded to the local Laravel (Laragon) host.
+      // `secure: false` accepts Laragon's self-signed certificate when the target is
+      // https://*.test — dev server only, the Vercel build never uses this proxy.
       proxy: env.VITE_PROXY_TARGET
-        ? { '/api': { target: env.VITE_PROXY_TARGET, changeOrigin: true } }
+        ? { '/api': { target: env.VITE_PROXY_TARGET, changeOrigin: true, secure: false } }
         : undefined,
     },
   };

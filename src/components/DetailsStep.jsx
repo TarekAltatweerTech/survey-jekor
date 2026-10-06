@@ -3,7 +3,7 @@ import ProductImage from './ProductImage.jsx';
 import { Flourish } from './Ornaments.jsx';
 import { isValidPhone, num, toLatinDigits } from '../lib/format.js';
 
-/** Page 3 — who is answering, then send everything. */
+/** Page 3 — optionally who is answering, then send everything. */
 export default function DetailsStep({
   votedProduct,
   averageRating,
@@ -21,12 +21,10 @@ export default function DetailsStep({
   const [touched, setTouched] = useState({ name: false, phone: false });
   const [tried, setTried] = useState(false);
 
-  const nameError = name.trim().length < 2 ? 'يرجى كتابة اسمك.' : null;
-  const phoneError = !phone.trim()
-    ? 'يرجى كتابة رقم هاتفك.'
-    : !isValidPhone(phone)
-      ? 'رقم الهاتف غير صحيح، اكتبه بالشكل 07XXXXXXXXX.'
-      : null;
+  // Both fields are optional: only something typed is checked.
+  const nameError = name.trim() && name.trim().length < 2 ? 'الاسم قصير جداً، أكمله أو اتركه فارغاً.' : null;
+  const phoneError =
+    phone.trim() && !isValidPhone(phone) ? 'رقم الهاتف غير صحيح، اكتبه بالشكل 07XXXXXXXXX أو اتركه فارغاً.' : null;
 
   const showName = (touched.name || tried) && nameError ? nameError : fieldErrors?.name?.[0];
   const showPhone = (touched.phone || tried) && phoneError ? phoneError : fieldErrors?.phone?.[0];
@@ -44,7 +42,7 @@ export default function DetailsStep({
       <div className="step__head">
         <h1 className="step__title">آخر خطوة</h1>
         <Flourish />
-        <p className="step__lead">أدخل اسمك ورقم هاتفك لإتمام مشاركتك.</p>
+        <p className="step__lead">اسمك ورقم هاتفك اختياريان، يمكنك تركهما فارغين وإرسال مشاركتك مباشرة.</p>
       </div>
 
       <div className="recap reveal">
@@ -65,7 +63,9 @@ export default function DetailsStep({
       </div>
 
       <div className={`field reveal ${showName ? 'has-error' : ''}`} style={{ '--i': 1 }}>
-        <label htmlFor="name">الاسم الكامل</label>
+        <label htmlFor="name">
+          الاسم <span className="field__optional">اختياري</span>
+        </label>
         <input
           id="name"
           type="text"
@@ -86,7 +86,9 @@ export default function DetailsStep({
       </div>
 
       <div className={`field reveal ${showPhone ? 'has-error' : ''}`} style={{ '--i': 2 }}>
-        <label htmlFor="phone">رقم الهاتف</label>
+        <label htmlFor="phone">
+          رقم الهاتف <span className="field__optional">اختياري</span>
+        </label>
         <input
           id="phone"
           type="tel"

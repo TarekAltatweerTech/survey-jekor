@@ -101,8 +101,9 @@ export default function App() {
     try {
       await submitResponse({
         device_id: deviceId(),
-        name: draft.name.trim(),
-        phone: normalizePhone(draft.phone),
+        // Optional: left empty, they are sent as null (shown as "مشارك #…" in the admin).
+        name: draft.name.trim() || null,
+        phone: draft.phone.trim() ? normalizePhone(draft.phone) : null,
         voted_product_id: draft.vote,
         ratings: products.map((p) => ({
           product_id: p.id,
@@ -192,9 +193,7 @@ export default function App() {
         ) : null}
 
         <footer className="sheet__foot">
-          <span>© جيكور</span>
-          <span aria-hidden="true">◆</span>
-          <span>مشاركة واحدة لكل جهاز</span>
+          <span>© Fusteka Group</span>
         </footer>
       </main>
     </div>
